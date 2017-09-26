@@ -821,4 +821,26 @@ UPDATE Product SET Price=ROUND(Price*.1,2);
 UPDATE Item SET Cost=Cost*(SELECT Price FROM Product prod WHERE ProductID=prod.ID);
 UPDATE Invoice SET Total=SELECT SUM(Cost*Quantity) FROM Item WHERE InvoiceID=Invoice.ID;
 
+CREATE TRIGGER insertItem AFTER INSERT ON Item
+	REFERENCING NEW ROW AS newrow
+	FOR EACH ROW
+		UPDATE Invoice 
+		SET Total = Total + (newrow.Cost * newrow.Quantity) 
+		WHERE InvoiceID = newrow.InvoiceID;
+
+CREATE TRIGGER updateItem AFTER UPDATE ON Item
+	REFERENCING NEW ROW AS newrow OLD ROW as oldrow
+	FOR EACH ROW			
+		UPDATE Invoice 
+		SET Total = SELECT SUM(Cost*Quantity) FROM Item WHERE InvoiceID=Invoice.ID 
+		WHERE (InvoiceID = oldrow.InvoiceID) OR (InvoiceID = newrow.InvoiceID);
+
+
+CREATE TRIGGER deleteItem AFTER DELETE ON Item
+	REFERENCING OLD ROW AS oldrow
+	FOR EACH ROW
+		UPDATE Invoice 
+		SET Total = Total - (oldrow.Cost * oldrow.Quantity) 
+		WHERE InvoiceID = oldrow.InvoiceID;
+
 COMMIT;

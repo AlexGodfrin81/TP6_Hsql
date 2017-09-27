@@ -27,17 +27,24 @@ public class HsqlDBTest {
 		// On crée la connection vers la base de test "in memory"
 		myDataSource = getDataSource();
 		myConnection = myDataSource.getConnection();
-		// On initialise la base avec le contenu d'un fichier de test
-		String sqlFilePath = HsqlDBTest.class.getResource("testdata.sql").getFile();
-		SqlFile sqlFile = new SqlFile(new File(sqlFilePath));
+		// On crée le schema de la base de test
+		executeSQLScript(myConnection, "schema.sql");
+		// On y met des données
+		executeSQLScript(myConnection, "bigtestdata.sql");		
 
-		sqlFile.setConnection(myConnection);
-		sqlFile.execute();
-		sqlFile.closeReader();
             	myObject = new SimpleDataAccessObject(myDataSource);
-
 	}
 	
+	private void executeSQLScript(Connection connexion, String filename)  throws IOException, SqlToolError, SQLException {
+		// On initialise la base avec le contenu d'un fichier de test
+		String sqlFilePath = HsqlDBTest.class.getResource(filename).getFile();
+		SqlFile sqlFile = new SqlFile(new File(sqlFilePath));
+
+		sqlFile.setConnection(connexion);
+		sqlFile.execute();
+		sqlFile.closeReader();		
+	}
+		
 	@After
 	public void tearDown() throws IOException, SqlToolError, SQLException {
 		myConnection.close();

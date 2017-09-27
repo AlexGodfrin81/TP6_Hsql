@@ -6,17 +6,6 @@
  *  sample data with the DatabaseManager utility.
  */
 
-
-DROP TABLE Item IF EXISTS;
-DROP TABLE Invoice IF EXISTS;
-DROP TABLE Product IF EXISTS;
-DROP TABLE Customer IF EXISTS;
-
-CREATE TABLE Customer(ID INTEGER PRIMARY KEY,FirstName VARCHAR(20),LastName VARCHAR(30),Street VARCHAR(50),City VARCHAR(25));
-CREATE TABLE Product(ID INTEGER PRIMARY KEY,Name VARCHAR(30),Price DECIMAL);
-CREATE TABLE Invoice(ID INTEGER PRIMARY KEY,CustomerID INTEGER,Total DECIMAL, FOREIGN KEY (CustomerId) REFERENCES Customer(ID) ON DELETE CASCADE);
-CREATE TABLE Item(InvoiceID INTEGER,Item INTEGER,ProductID INTEGER,Quantity INTEGER,Cost DECIMAL,PRIMARY KEY(InvoiceID,Item), FOREIGN KEY (InvoiceId) REFERENCES Invoice (ID) ON DELETE CASCADE, FOREIGN KEY (ProductId) REFERENCES Product(ID));
-
 INSERT INTO Customer VALUES(0,'Laura','Steel','429 Seventh Av.','Dallas');
 INSERT INTO Product VALUES(0,'Iron Iron',54);
 INSERT INTO Customer VALUES(1,'Susanne','King','366 - 20th Ave.','Olten');
@@ -817,30 +806,9 @@ INSERT INTO Item VALUES(49,3,17,19,1.5);
 INSERT INTO Item VALUES(49,2,29,6,1.5);
 INSERT INTO Item VALUES(49,1,22,16,1.5);
 INSERT INTO Item VALUES(49,0,18,6,1.5);
+
 UPDATE Product SET Price=ROUND(Price*.1,2);
 UPDATE Item SET Cost=Cost*(SELECT Price FROM Product prod WHERE ProductID=prod.ID);
 UPDATE Invoice SET Total=SELECT SUM(Cost*Quantity) FROM Item WHERE InvoiceID=Invoice.ID;
-
-CREATE TRIGGER insertItem AFTER INSERT ON Item
-	REFERENCING NEW ROW AS newrow
-	FOR EACH ROW
-		UPDATE Invoice 
-		SET Total = Total + (newrow.Cost * newrow.Quantity) 
-		WHERE InvoiceID = newrow.InvoiceID;
-
-CREATE TRIGGER updateItem AFTER UPDATE ON Item
-	REFERENCING NEW ROW AS newrow OLD ROW as oldrow
-	FOR EACH ROW			
-		UPDATE Invoice 
-		SET Total = SELECT SUM(Cost*Quantity) FROM Item WHERE InvoiceID=Invoice.ID 
-		WHERE (InvoiceID = oldrow.InvoiceID) OR (InvoiceID = newrow.InvoiceID);
-
-
-CREATE TRIGGER deleteItem AFTER DELETE ON Item
-	REFERENCING OLD ROW AS oldrow
-	FOR EACH ROW
-		UPDATE Invoice 
-		SET Total = Total - (oldrow.Cost * oldrow.Quantity) 
-		WHERE InvoiceID = oldrow.InvoiceID;
 
 COMMIT;

@@ -24,7 +24,7 @@ INSERT INTO Item VALUES(1,0,0,8,1.5);
 INSERT INTO Item VALUES(1,1,1,4,1.5);
 
 
-UPDATE Product SET Price=ROUND(Price*.1,2);
+
 UPDATE Item SET Cost=Cost*(SELECT Price FROM Product prod WHERE ProductID=prod.ID);
 UPDATE Invoice SET Total=SELECT SUM(Cost*Quantity) FROM Item WHERE InvoiceID=Invoice.ID;
 

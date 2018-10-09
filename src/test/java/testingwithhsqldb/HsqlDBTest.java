@@ -45,7 +45,7 @@ public class HsqlDBTest {
 		
 	@After
 	public void tearDown() throws IOException, SqlToolError, SQLException {
-		myConnection.close();
+		myConnection.close(); // La base de données de test est détruite ici
              	myObject = null; // Pas vraiment utile
 
 	}

@@ -20,7 +20,7 @@ public class HsqlDBTest {
 	private static DataSource myDataSource;
 	private static Connection myConnection ;
 	
-	private SimpleDataAccessObject myObject;
+	private DAO myObject;
 	
 	@Before
 	public  void setUp() throws IOException, SqlToolError, SQLException {
@@ -32,7 +32,7 @@ public class HsqlDBTest {
 		// On y met des données
 		executeSQLScript(myConnection, "bigtestdata.sql");		
 
-            	myObject = new SimpleDataAccessObject(myDataSource);
+            	myObject = new DAO(myDataSource);
 	}
 	
 	private void executeSQLScript(Connection connexion, String filename)  throws IOException, SqlToolError, SQLException {
@@ -65,7 +65,7 @@ public class HsqlDBTest {
 		assertNull("name should be null, customer does not exist !", name);
 	}
 
-	public static DataSource getDataSource() throws SQLException {
+	public static DataSource getDataSource() {
 		org.hsqldb.jdbc.JDBCDataSource ds = new org.hsqldb.jdbc.JDBCDataSource();
 		ds.setDatabase("jdbc:hsqldb:mem:testcase;shutdown=true");
 		ds.setUser("sa");

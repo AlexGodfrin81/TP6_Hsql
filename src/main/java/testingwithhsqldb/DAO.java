@@ -6,10 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 
-public class SimpleDataAccessObject {
+public class DAO {
 	private final DataSource myDataSource;
 	
-	public SimpleDataAccessObject(DataSource dataSource) {
+	public DAO(DataSource dataSource) {
 		myDataSource = dataSource;
 	}
 

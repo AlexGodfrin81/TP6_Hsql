@@ -1,9 +1,5 @@
 /*
- *  $Id: sampledata.sql 3348 2009-12-15 14:24:19Z unsaved $
- *
- *  Creates and populates database objects with sample data.
- *  This file was created by grabbing the commands made by creating
- *  sample data with the DatabaseManager utility.
+ *  Creates database objects.
  */
 
 DROP TABLE Item IF EXISTS;

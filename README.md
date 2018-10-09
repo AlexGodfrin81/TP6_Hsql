@@ -3,7 +3,7 @@
 ## Description
 
 Je jeu de test utilise une base [HSQLDB](hsqldb.org). La base est créée et initialisée
-en mémoire avant chaque test (`@Before`). Le code SQL d'initialisation est dans les
+en mémoire avant chaque test (`@Before`) en utilisant la classe [SqlFile](http://hsqldb.org/doc/2.0/apidocs/org/hsqldb/cmdline/SqlFile.html) fournie par HSQLDB. Le code SQL d'initialisation est dans les
 ressources de test (`src/test/resources`) sous la forme de fichiers SQL.
 
 La source HSQLDB de données est configurée dans le jeu de test par la méthode suivante :

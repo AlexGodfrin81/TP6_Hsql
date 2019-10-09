@@ -38,5 +38,30 @@ public class DAO {
 		// dernière ligne : on renvoie le résultat
 		return result;
 	}
+        
+        public int addProd(int ID,String Name,int Price) throws SQLException{
+            String sql = "INSERT INTO PRODUCT VALUES (?,?,?)";
+            try (Connection myConnection = myDataSource.getConnection();
+            PreparedStatement stmt = myConnection.prepareStatement(sql)) {
+                stmt.setInt(1, ID);
+                stmt.setString(2, Name);
+                stmt.setInt(3, Price);
+                return stmt.executeUpdate();
+            }
+        }
+        
+        public ProductEntity searchProd(int ID) throws SQLException{
+            String sql = "SELECT * FROM PRODUCT WHERE PRODUCT_ID = ?";
+            try (Connection myConnection = myDataSource.getConnection(); 
+		     PreparedStatement stmt = myConnection.prepareStatement(sql)) {
+                     stmt.setInt(1, ID);
+			try ( ResultSet rs = stmt.executeQuery() ) {
+                          if ( rs.next() );
+                           ProductEntity result = new ProductEntity(ID,rs.getString("DESCRIPTION"),rs.getInt("PURCHASE_COST"));
+                           return result;
+			}
+            }
+            
+        }
 	
 }
